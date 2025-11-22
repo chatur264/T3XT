@@ -4,7 +4,7 @@ import User from "../models/User.model.js";
 import bcrypt from "bcrypt"
 import "dotenv/config"
 
-export const signup = async (req, res) => {
+export const signup = async (req, res) => { 
     let { fullName, email, password } = req.body;
     fullName = fullName.trim();
     email = email.trim().toLowerCase();
@@ -140,7 +140,64 @@ export const signup = async (req, res) => {
 
     } catch (err) {
         console.log("Error in signup controller: ", err);
-        res.status(400).json(
+        res.status(500).json(
+            { message: "Internal server error" }
+        )
+    }
+}
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            res.status(400).json({
+                meassage: "All fields required"
+            });
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            res.status(400).json({
+                meassage: "Invalid credentials email"
+            });
+        }
+
+        const isPasswordMatched = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatched) {
+            console.log("email");
+            res.status(400).json({
+                meassage: "Invalid credentials password"
+            });
+        }
+
+        //Valid user:
+        generateToken(user._id, res);
+        res.status(201).json({
+            message: "User logged in successfully",
+            _id: User._id,
+            fullName: User.fullName,
+            email: User.email,
+            profilePic: User.profilePic,
+        })
+    } catch (err) {
+        console.log("Error in login controller: ", err);
+        res.status(500).json(
+            { message: "Internal server error" }
+        )
+    }
+
+}
+
+export const logout = (_, res) => {
+    try {
+        res.cookie("jwtToken", null, { maxAge: 0 });
+        res.status(201).json({
+            message: "User logged out successfully",
+        })
+    } catch (err) {
+        console.log("Error in logout controller: ", err);
+        res.status(500).json(
             { message: "Internal server error" }
         )
     }

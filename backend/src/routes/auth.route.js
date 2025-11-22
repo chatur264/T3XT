@@ -1,15 +1,13 @@
 import express from 'express'
-import { signup } from '../controllers/auth.controller.js';
+import { login, logout, signup } from '../controllers/auth.controller.js';
+import { arcjetProtection } from '../middlewares/arcjet.middleware.js';
+
 const router = express.Router()
 
+router.use(arcjetProtection);
+
 router.post("/signup", signup)
-
-router.get("/login", (req, res) => {
-    res.send("Login endpoint");
-})
-
-router.get("/logout", (req, res) => {
-    res.send("Logout endpoint");
-})
+router.post("/login", arcjetProtection, login)
+router.post("/logout", logout)
 
 export default router
