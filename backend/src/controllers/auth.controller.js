@@ -4,7 +4,7 @@ import User from "../models/User.model.js";
 import bcrypt from "bcrypt"
 import "dotenv/config"
 
-export const signup = async (req, res) => { 
+export const signup = async (req, res) => {
     let { fullName, email, password } = req.body;
     fullName = fullName.trim();
     email = email.trim().toLowerCase();
@@ -117,7 +117,7 @@ export const signup = async (req, res) => {
             generateToken(savedUser._id, res);
 
             res.status(201).json({
-                message: "User added successfully",
+                message: "Account created successfully",
                 _id: newUser._id,
                 fullName: newUser.fullName,
                 email: newUser.email,
@@ -151,7 +151,7 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
         if (!email || !password) {
             res.status(400).json({
-                meassage: "All fields required"
+                message: "All fields required"
             });
         }
 
@@ -159,7 +159,7 @@ export const login = async (req, res) => {
 
         if (!user) {
             res.status(400).json({
-                meassage: "Invalid credentials email"
+                message: "Invalid credentials"
             });
         }
 
@@ -167,18 +167,18 @@ export const login = async (req, res) => {
         if (!isPasswordMatched) {
             console.log("email");
             res.status(400).json({
-                meassage: "Invalid credentials password"
+                meassage: "Invalid credentials"
             });
         }
 
         //Valid user:
         generateToken(user._id, res);
         res.status(201).json({
-            message: "User logged in successfully",
-            _id: User._id,
-            fullName: User.fullName,
-            email: User.email,
-            profilePic: User.profilePic,
+            message: "User logged in successfully!",
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePic: user.profilePic,
         })
     } catch (err) {
         console.log("Error in login controller: ", err);

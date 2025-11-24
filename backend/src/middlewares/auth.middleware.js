@@ -6,14 +6,14 @@ export const protectRoute = async (req, res, next) => {
     try {
         const { jwtToken } = req.cookies;
         if (!jwtToken) {
-            return res.status(400).json({
+            return res.status(401).json({
                 message: "Unotherized - No token provided"
             })
         }
 
         const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET)
         if (!decoded) {
-            return res.status(400).json({
+            return res.status(401).json({
                 message: "Unotherized - Invalid token"
             })
         }
@@ -30,7 +30,7 @@ export const protectRoute = async (req, res, next) => {
     } catch (error) {
         console.log("Error in protectRoute middleware: ", error);
         return res.status(500).json({
-            message: "Internal server error"
-        })
+                message: "Internal server error"
+            })
     }
 }

@@ -7,6 +7,7 @@ import profileRoute from './routes/profile.route.js'
 import dotenv from "dotenv"
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser"
+import cors from 'cors'
 
 const app = express();
 
@@ -19,6 +20,11 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true //for cookie 
+}));
 
 app.set("trust proxy", true);
 app.use((req, _, next) => {
