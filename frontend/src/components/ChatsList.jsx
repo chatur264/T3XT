@@ -7,12 +7,11 @@ import { useAuthStore } from "../store/useAuthStore";
 function ChatsList() {
   const { getChatPartners, chatPartners, isUsersLoading, setSelectedUser } =
     useChatStore();
-  const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
     getChatPartners();
   }, [getChatPartners]);
-
+  const { onlineUsers } = useAuthStore();
   if (isUsersLoading) return <UsersLoadingSkeleton />;
   if (chatPartners.length === 0) return <NoChatsFound />;
 
@@ -25,7 +24,11 @@ function ChatsList() {
           onClick={() => setSelectedUser(partner)}
         >
           <div className="flex items-center gap-3 relative">
-            <div className="size-12 rounded-full avatar-online">
+            <div
+              className={`size-12 rounded-full overflow-hidden avatar-${
+                onlineUsers.includes(partner._id) ? "online" : ""
+              }`}
+            >
               <img
                 src={partner.profilePic || "/avatar.png"}
                 alt={partner.fullName}

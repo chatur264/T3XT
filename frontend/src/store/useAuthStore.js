@@ -1,6 +1,9 @@
 import { create } from "zustand"
 import { axiosInstance } from "../lib/axios.js"
 import toast from "react-hot-toast"
+import { io } from "socket.io-client"
+
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "/"
 
 export const useAuthStore = create((set, get) => ({
     authUser: null,
@@ -9,10 +12,17 @@ export const useAuthStore = create((set, get) => ({
     isLoggingIn: false,
     isLoggingOut: false,
 
+    //socket variables
+    socket: null,
+    onlineUsers: [],
+
     checkAuth: async () => {
         try {
             const res = await axiosInstance.get("/profile/check-profile")
             set({ authUser: res.data })
+
+            //connect the socket to server
+            get().connectSocket();
 
         } catch (error) {
             console.log("Error in authCheck: ", error);
@@ -28,11 +38,12 @@ export const useAuthStore = create((set, get) => ({
         set({ isSigningUp: true });
 
         try {
-            const res = await axiosInstance.post("/auth/login", data);
+            const res = await axiosInstance.post("/auth/signup", data);
             set({ authUser: res.data })
-
-            //popup notification
             toast.success("Account created successfully!")
+
+            //connect the socket to server
+            get().connectSocket();
 
         } catch (error) {
             toast.error(error.response.data.message);
@@ -48,6 +59,10 @@ export const useAuthStore = create((set, get) => ({
             set({ authUser: res.data });
             toast.success("User logged in successfully");
 
+            //connect the socket to server
+            get().connectSocket();
+
+
         } catch (error) {
             toast.error(error.response.data.message);
         } finally {
@@ -61,6 +76,8 @@ export const useAuthStore = create((set, get) => ({
             await axiosInstance.post("/auth/logout");
             set({ authUser: null });
             toast.success("User logged out successfully");
+            //disconnect the socket to server
+            get().dicconnectSocket();
 
         } catch (error) {
             toast.error(error.response.data.message);
@@ -79,4 +96,29 @@ export const useAuthStore = create((set, get) => ({
             toast.error(error.response.data.message);
         }
     },
+
+    connectSocket: () => {
+        const { authUser } = get();
+
+        //If user is not login OR already connected to socket server just return
+        if (!authUser || get().socket?.connected) return;
+
+        const socket = io(BASE_URL, {
+            withCredentials: true
+        });
+
+        set({ socket });
+
+        //listen for online users events
+        socket.on("getOnlineUsers", (userIds) => {
+            set({ onlineUsers: userIds });
+        })
+    },
+
+    disconnectSocket: () => {
+        if (get().socket?.connected) {
+            get().socket.disconnect();
+        }
+
+    }
 }))

@@ -7,7 +7,6 @@ import { useAuthStore } from "../store/useAuthStore";
 function ChatsList() {
   const { getAllContacts, allContacts, isUsersLoading, setSelectedUser } =
     useChatStore();
-  const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
     getAllContacts();
@@ -25,7 +24,7 @@ function ChatsList() {
           onClick={() => setSelectedUser(contact)}
         >
           <div className="flex items-center gap-3 relative ">
-            <div className="size-12 rounded-full avatar-online">
+            <div className="size-12 rounded-full overflow-hidden object-cover">
               <img
                 src={contact.profilePic || "/avatar.png"}
                 alt={contact.fullName}

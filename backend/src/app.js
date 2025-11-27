@@ -8,8 +8,8 @@ import dotenv from "dotenv"
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser"
 import cors from 'cors'
+import { server, app } from "./lib/socket.js"
 
-const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || 7777
@@ -18,7 +18,7 @@ const __dirname = path.resolve();
 
 
 
-app.use(express.json());
+app.use(express.json({ limit: "15mb" }));
 app.use(cookieParser());
 
 app.use(cors({
@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === "production") {
     });
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("Server is running on port: " + PORT);
     connectDB();
 }) 
