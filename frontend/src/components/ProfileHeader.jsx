@@ -3,14 +3,12 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import { LogOutIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 
-const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
-
 const ProfileHeader = () => {
   const { logout, authUser, updateProfile } = useAuthStore();
-  const { isSoundEnabled, toggleSound } = useChatStore();
+
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
-  
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -25,20 +23,20 @@ const ProfileHeader = () => {
     };
   };
   return (
-    <div className="p-3 border-b border-slate-700/50">
+    <div className="p-3 border-t border-slate-700/50 bg-slate-900">
       <div className="flex items-center justify-between">
         {/* Profile image & User  */}
-        <div className="flex justify-center items-center gap-3">
+        <div className="flex justify-center items-center gap-2">
           {/* AVATAR */}
 
           <button
-            className="size-14 rounded-full overflow-hidden relative group"
+            className="size-12 rounded-full overflow-hidden relative group"
             onClick={() => fileInputRef.current.click()}
           >
             <img
               src={selectedImage || authUser.profilePic || "/avatar.png"}
               alt="User image"
-              className="size-full object-cover"
+              className="w-11 h-11 rounded-full object-cover "
             />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity ">
               <span className="text-white text-xs ">Change</span>
@@ -52,13 +50,13 @@ const ProfileHeader = () => {
             onChange={handleImageUpload}
             className="hidden"
           />
+
           {/* USERNAME & ONLINE TEXT */}
           <div>
-            <h3 className="text-slate-200 font-medium text-base max-w-[180px] truncate">
-              {authUser.fullName}
+            <h3 className=" text-slate-200 max-w-[180px] truncate text-base sm:text-xs xl:text-base">
+              {authUser?.fullName}
             </h3>
-
-            <p className="text-slate-400 text-xs">Online</p>
+            <p className="text-green-500 text-xs sm:text-[10px] xl:text-xs">Online</p>
           </div>
         </div>
 
@@ -69,26 +67,7 @@ const ProfileHeader = () => {
             className="text-slate-400 hover:text-slate-200 transition-colors"
             onClick={logout}
           >
-            <LogOutIcon className="size-4" />
-          </button>
-
-          {/* SOUND TOGGLE BTN */}
-          <button
-            className="text-slate-400 hover:text-slate-200 transition-colors"
-            onClick={() => {
-              // play click sound before toggling
-              mouseClickSound.currentTime = 0; // reset to start
-              mouseClickSound
-                .play()
-                .catch((error) => console.log("Audio play failed:", error));
-              toggleSound();
-            }}
-          >
-            {isSoundEnabled ? (
-              <Volume2Icon className="size-4" />
-            ) : (
-              <VolumeOffIcon className="size-4" />
-            )}
+            <LogOutIcon className="size-4 sm:size-3 xl:size-4" />
           </button>
         </div>
       </div>

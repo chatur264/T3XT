@@ -34,9 +34,9 @@ function SignUpPage() {
   };
 
   return (
-    <div className="w-full flex items-center justify-center p-4 bg-slate-900 min-h-screen">
+    <div className="w-full flex items-center justify-center bg-slate-900 min-h-screen">
       <div className="relative w-full max-w-6xl md:h-[700px] bg-slate-900 rounded-lg  border-slate-800/40 shadow-md">
-        <div className="w-full flex flex-col md:flex-row justify-center items-center h-full  p-8">
+        <div className="w-full flex flex-col md:flex-row justify-center items-center h-full ">
           {/* FORM COLUMN */}
           <div className="w-full md:w-1/2 p-10 flex items-center justify-center md:border-r border-slate-700/40 h-full">
             <div className="w-full max-w-md flex flex-col justify-center items-center">
@@ -93,14 +93,14 @@ function SignUpPage() {
                     <LockIcon className="auth-input-icon absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
                     {showPassword ? (
                       <EyeIcon
-                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer"
+                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer size-4 md:size-5"
                         onClick={() => {
                           setShowPassword(!showPassword);
                         }}
                       />
                     ) : (
                       <EyeOffIcon
-                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer"
+                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer size-4 md:size-5"
                         onClick={() => {
                           setShowPassword(!showPassword);
                         }}
@@ -126,14 +126,14 @@ function SignUpPage() {
                     <LockIcon className="auth-input-icon absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
                     {showConfirmPassword ? (
                       <EyeIcon
-                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer"
+                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer size-4 md:size-5"
                         onClick={() => {
                           setShowConfirmPassword(!showConfirmPassword);
                         }}
                       />
                     ) : (
                       <EyeOffIcon
-                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer"
+                        className="auth-input-icon absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 z-10 cursor-pointer size-4 md:size-5"
                         onClick={() => {
                           setShowConfirmPassword(!showConfirmPassword);
                         }}

@@ -7,28 +7,37 @@ import MessagesLoadingSkeleton from "./MessagesLoadingSkeleton";
 import MessageInput from "./MessageInput";
 
 const ChatContainer = () => {
-  const { selectedUser, getMessagesByUserId, messages, isMessagesLoading } =
-    useChatStore();
-  const { authUser } = useAuthStore();
+  const {
+    selectedUser,
+    getMessagesByUserId,
+    messages,
+    isMessagesLoading,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
 
+  const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessagesByUserId(selectedUser._id);
-  }, [selectedUser, getMessagesByUserId]);
+    subscribeToMessages();
+    return () => unsubscribeFromMessages();
+  }, [selectedUser]);
 
   useEffect(() => {
     if (messageEndRef.current) {
-      messageEndRef.current.scrollIntoView({ behaviour: "smooth" });
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
   return (
-    <div className="flex flex-col justify-end  h-full">
+    <div className="flex flex-col justify-end h-full">
       <ChatHeader />
-      <div className="flex-1 overflow-y-auto py-8 px-10">
+
+      <div className="flex-1 overflow-y-auto p-5 ">
         {messages.length > 0 && !isMessagesLoading ? (
-          <div className=" mx-auto space-y-6 ">
+          <div className="mx-auto space-y-6 ">
             {messages.map((msg) => (
               <div
                 key={msg._id}
@@ -37,7 +46,7 @@ const ChatContainer = () => {
                 }`}
               >
                 <div
-                  className={`chat-bubble ${
+                  className={`chat-bubble px-3 py-2 ${
                     msg.senderId === authUser._id
                       ? "bg-cyan-600 text-white"
                       : "bg-slate-800 text-slate-200"
@@ -50,8 +59,10 @@ const ChatContainer = () => {
                       className="rounded-lg h-48 object-cover"
                     />
                   )}
+
                   {msg.text && <p className="mt-2">{msg.text}</p>}
-                  <p className="text-[10px] mt-1 opacity-75 flex gap-1 justify-end">
+
+                  <p className="text-[9px] mt-1 opacity-75 flex gap-1 justify-end">
                     {new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -69,6 +80,7 @@ const ChatContainer = () => {
           <NoChatHistoryPlaceholder name={selectedUser.fullName} />
         )}
       </div>
+
       <MessageInput />
     </div>
   );
