@@ -13,7 +13,7 @@ const io = new Server(server, {
     }
 })
 
-// apply authentication middleware to all socket connections
+// apply authentication middleware to all socket connections: to get the connected user info and userID to Socket
 io.use(socketAuthMiddleware);
 
 // we will use this function to check if the user is online or not
@@ -30,14 +30,14 @@ io.on("connection", (socket) => {
     const userId = socket.userId;
     userSocketMap[userId] = socket.id;
 
-    //online users info to all other connected  users
+    //online users info to all other connected users
     io.emit("getOnlineUsers", Object.keys(userSocketMap))
 
     socket.on("disconnect", () => {
         console.log("A user disconnected", socket.user.fullName);
         delete userSocketMap[userId];
 
-        ///now rethrow the notification
+        ///now rethrow the rest online users
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     })
 })

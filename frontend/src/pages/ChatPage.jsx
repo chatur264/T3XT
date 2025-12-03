@@ -18,7 +18,7 @@ const ChatPage = () => {
           className={`w-full 
          ${selectedUser ? "hidden" : "block"} 
         sm:flex
-        sm:w-[40vw] md:w-[35vw] lg:w-[30vw] xl:w-[25vw] 
+        sm:w-[50vw] md:w-[40vw] lg:w-[35vw] xl:w-[28vw] 
         bg-linear-to-bl from-slate-800/60 to-transparent 
         h-full flex flex-col border-r border-slate-700/50`}
         >

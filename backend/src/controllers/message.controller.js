@@ -1,7 +1,7 @@
 import { getReceiverSocketId, io } from "../lib/socket.js";
+import LastMessage from "../models/LastMessage.model.js";
 import Message from "../models/Message.model.js";
 import User from "../models/User.model.js";
-import cloudinary from "cloudinary"
 
 export const getAllContacts = async (req, res) => {
     try {
@@ -71,10 +71,34 @@ export const sendMessage = async (req, res) => {
             },
         )
         await newMessage.save();
+
+        // 1) Find or Create lastConversation
+        let lastConversation = await LastMessage.findOne({
+            participants: { $all: [senderId, receiverId] }
+        });
+
+        if (!lastConversation) {
+            lastConversation = await LastMessage.create({
+                participants: [senderId, receiverId],
+            });
+        }
+
+        // 3) Update lastMessage & lastMessageTime
+        lastConversation.lastMessageText = text;
+        lastConversation.lastMessageTime = new Date();
+        await lastConversation.save();
+
         //! todo: send message in real-time if user is online - socket.io
+        // Emit to receiver
         const receiverSocketId = getReceiverSocketId(receiverId);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
+
+        // Emit to sender (so your own chat list updates live)
+        const senderSocketId = getReceiverSocketId(senderId);
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("newMessage", newMessage);
         }
 
 
@@ -124,3 +148,18 @@ export const getChatPartners = async (req, res) => {
         })
     }
 }
+
+export const getLastConversations = async (req, res) => {
+    try {
+        const loggedInUserId = req.user._id;
+        // Find all last messages where loggedIn user is one of the participants
+        const lastConversations = await LastMessage.find({
+            participants: { $in: [loggedInUserId] }
+        }).sort({ lastMessageTime: -1 }); // sort by latest first
+
+        res.status(200).json(lastConversations);
+    } catch (error) {
+        console.log("Error in getLastConversations:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};

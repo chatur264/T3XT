@@ -5,12 +5,26 @@ import NoChatsFound from "./NoChatsFound";
 import { useAuthStore } from "../store/useAuthStore";
 
 function ChatsList() {
-  const { getChatPartners, chatPartners, isUsersLoading, setSelectedUser } =
-    useChatStore();
+  const {
+    getChatPartners,
+    chatPartners,
+    isUsersLoading,
+    setSelectedUser,
+    getLastConversation,
+    lastConversationsMap,
+    unreadMessagesMap,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
 
   useEffect(() => {
     getChatPartners();
-  }, [getChatPartners]);
+    getLastConversation();
+
+    subscribeToMessages();
+    return () => unsubscribeFromMessages();
+  }, []);
+
   const { onlineUsers } = useAuthStore();
 
   if (isUsersLoading) return <UsersLoadingSkeleton />;
@@ -21,7 +35,7 @@ function ChatsList() {
       {chatPartners.map((partner) => (
         <div
           key={partner._id}
-          className="p-2 cursor-pointer  hover:scale-103 hover:delay-100 hover:transition-all flex items-center gap-3"
+          className="p-2 cursor-pointer   flex items-center gap-3"
           onClick={() => setSelectedUser(partner)}
         >
           <div className="flex items-center gap-3 relative">
@@ -38,13 +52,23 @@ function ChatsList() {
             </div>
           </div>
 
-          <div>
-            <h4 className="text-slate-200 text-sm truncate">
+          <div className="w-full">
+            <h4 className="text-slate-200 text-sm truncate font-semibold">
               {partner.fullName}
             </h4>
-            <p className="text-green-400 text-[10px]">
-              {onlineUsers.includes(partner._id) ? "Online" : ""}
-            </p>
+
+            <div className="w-full flex justify-between items-center">
+              <p className=" text-gray-400 text-[11px] truncate w-55">
+                {lastConversationsMap[partner._id] || "No messages yet"}
+              </p>
+              {unreadMessagesMap[partner._id] > 0 && (
+                <div className="bg-green-600 flex justify-center items-center w-4 h-4 rounded-full">
+                  <p className="text-[10px]">
+                    {unreadMessagesMap[partner._id]}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ))}

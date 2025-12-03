@@ -34,11 +34,11 @@ function SignUpPage() {
   };
 
   return (
-    <div className="w-full flex items-center justify-center bg-slate-900 min-h-screen">
-      <div className="relative w-full max-w-6xl md:h-[700px] bg-slate-900 rounded-lg  border-slate-800/40 shadow-md">
-        <div className="w-full flex flex-col md:flex-row justify-center items-center h-full ">
+    <div className="w-full flex items-center justify-center bg-slate-900 min-h-screen p-2 mt-10">
+      <div className="relative w-full max-w-6xl md:h-[700px] bg-slate-900 rounded-lg  border-slate-800/40 shadow-md ">
+        <div className="w-full flex flex-col md:flex-row justify-center items-center h-full">
           {/* FORM COLUMN */}
-          <div className="w-full md:w-1/2 p-10 flex items-center justify-center md:border-r border-slate-700/40 h-full">
+          <div className="w-full md:w-1/2 p-10 flex items-center justify-center md:border-r border-slate-700/40 ">
             <div className="w-full max-w-md flex flex-col justify-center items-center">
               {/* HEADER */}
               <div className="text-center mb-8">

@@ -20,7 +20,7 @@ function ChatsList() {
       {allContacts.map((contact) => (
         <div
           key={contact._id}
-          className="cursor-pointer hover:scale-103 hover:delay-100 hover:transition-all p-2 flex items-center gap-3"
+          className="cursor-pointer  p-2 flex items-center gap-3"
           onClick={() => setSelectedUser(contact)}
         >
           <div className="flex items-center gap-3 relative ">

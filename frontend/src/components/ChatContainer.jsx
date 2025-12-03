@@ -7,22 +7,14 @@ import MessagesLoadingSkeleton from "./MessagesLoadingSkeleton";
 import MessageInput from "./MessageInput";
 
 const ChatContainer = () => {
-  const {
-    selectedUser,
-    getMessagesByUserId,
-    messages,
-    isMessagesLoading,
-    subscribeToMessages,
-    unsubscribeFromMessages,
-  } = useChatStore();
+  const { selectedUser, getMessagesByUserId, messages, isMessagesLoading } =
+    useChatStore();
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessagesByUserId(selectedUser._id);
-    subscribeToMessages();
-    return () => unsubscribeFromMessages();
   }, [selectedUser]);
 
   useEffect(() => {
@@ -35,14 +27,14 @@ const ChatContainer = () => {
     <div className="flex flex-col justify-end h-full">
       <ChatHeader />
 
-      <div className="flex-1 overflow-y-auto p-5 ">
+      <div className="flex-1 overflow-y-auto p-14 ">
         {messages.length > 0 && !isMessagesLoading ? (
-          <div className="mx-auto space-y-6 ">
+          <div className="mx-auto space-y-6">
             {messages.map((msg) => (
               <div
                 key={msg._id}
-                className={`chat ${
-                  msg.senderId === authUser._id ? "chat-end" : "chat-start"
+                className={`chat relative ${
+                  msg.senderId === authUser._id ? "chat-end" : "chat-start "
                 }`}
               >
                 <div
@@ -69,6 +61,18 @@ const ChatContainer = () => {
                       hour12: true,
                     })}
                   </p>
+                </div>
+
+                <div
+                  className={`absolute ${
+                    msg.senderId === authUser._id ? "-right-10" : "-left-10"
+                  } -bottom-3`}
+                >
+                  <img
+                    src={msg.senderId === authUser._id ?authUser.profilePic:selectedUser.profilePic || "/avatar.png"}
+                    alt={authUser.fullName}
+                    className="w-8 rounded-full"
+                  />
                 </div>
               </div>
             ))}
