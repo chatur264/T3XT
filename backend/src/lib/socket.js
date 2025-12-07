@@ -17,7 +17,8 @@ const io = new Server(server, {
         ],
         credentials: true,
     },
-    transports: ["polling"]
+    transports: ["websocket", "polling"], // websocket first, polling fallback
+    allowEIO3: true // optional, helps with older clients
 })
 
 // apply authentication middleware to all socket connections: to get the connected user info and userID to Socket

@@ -113,8 +113,8 @@ export const useAuthStore = create((set, get) => ({
         if (!authUser || get().socket?.connected) return;
 
         const socket = io(BASE_URL, {
-            transports: ["polling"],
-            withCredentials: true
+            withCredentials: true,
+            transports: ["websocket", "polling"],
         });
 
         set({ socket });
