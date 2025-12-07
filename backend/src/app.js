@@ -50,7 +50,10 @@ if (process.env.NODE_ENV === "production") {
     });
 }
 
-server.listen(PORT, () => {
-    console.log("Server is running on port: " + PORT);
-    connectDB();
-}) 
+await connectDB();
+if (process.env.NODE_ENV !== "production")
+    server.listen(PORT, () => {
+        console.log("Server is running on port: " + PORT);
+    })
+
+export default server //Export server fro Vercel
