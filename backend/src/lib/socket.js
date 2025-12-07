@@ -10,7 +10,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: process.env.CLIENT_URL,
+        origin: [
+            "http://localhost:5173",
+            "https://t3xt-frontend.vercel.app",
+            "https://t3xt-frontend-git-main-sachin-kumars-projects-54c2c5aa.vercel.app"
+        ],
         credentials: true,
     }
 })
@@ -64,7 +68,7 @@ io.on("connection", (socket) => {
     socket.on("disconnect", async () => {
         console.log("A user disconnected", socket.user.fullName);
         delete userSocketMap[userId];
-        
+
         //update his last seen
         await User.findByIdAndUpdate(userId, {
             lastSeen: new Date()
