@@ -24,7 +24,8 @@ app.use(cookieParser());
 
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://t3xt-frontend.vercel.app"
+    "https://t3xt-frontend.vercel.app",
+    "https://t3xt-frontend-git-main-sachin-kumars-projects-54c2c5aa.vercel.app"
 ];
 app.use(cors({
     origin: allowedOrigins,
