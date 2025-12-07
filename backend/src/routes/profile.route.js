@@ -4,9 +4,10 @@ import { protectRoute } from '../middlewares/auth.middleware.js';
 import { arcjetProtection } from '../middlewares/arcjet.middleware.js';
 const router = express.Router()
 
-// router.use(arcjetProtection)
-router.use(protectRoute)
-router.put("/update-profile",  updateProfile);
+router.use(arcjetProtection)
+
+router.use(protectRoute) //Check Authentication frist
+router.put("/update-profile", updateProfile);
 router.get("/check-profile", (req, res) => {
     res.status(200).json(req.user);
 });

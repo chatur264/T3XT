@@ -6,9 +6,10 @@ import { useAuthStore } from "./useAuthStore";
 export const useChatStore = create((set, get) => ({
     allContacts: [],
     chatPartners: [],
+    searchTerm: "",
+    setSearchTerm: (value) => set({ searchTerm: value }),
 
     lastConversationsMap: {},
-    unreadMessagesMap: {},
 
     messages: [],
     activeTab: 'chats',//by default chats partners tab
@@ -30,15 +31,23 @@ export const useChatStore = create((set, get) => ({
     },
 
     setSelectedUser: (selectedUser) => {
-        // Open chat → clear unread for this user
-        const unread = get().unreadMessagesMap;
-        set({ selectedUser }) //OR ({selectedUser})
+        set({ selectedUser });
 
-        if (selectedUser && unread[selectedUser._id]) {
+        const socket = useAuthStore.getState().socket;
+        socket.emit("openChat", { chatWith: selectedUser ? selectedUser._id : null });
+
+        if (selectedUser) {
             set((state) => {
-                const updated = { ...state.unreadMessagesMap };
-                delete updated[selectedUser._id];
-                return { unreadMessagesMap: updated };
+                const updated = { ...state.lastConversationsMap };
+
+                if (updated[selectedUser._id]) {
+                    updated[selectedUser._id] = {
+                        ...updated[selectedUser._id],
+                        unreadMessages: 0,
+                    };
+                }
+
+                return { lastConversationsMap: updated };
             });
         }
     },
@@ -88,15 +97,21 @@ export const useChatStore = create((set, get) => ({
             const map = {};
             res.data?.forEach(c => {
                 const partnerId = c.participants.find(id => id !== authUser._id);
-                map[partnerId] = c.lastMessageText;
+                const lastSender = c.lastMessageSenderId;
+                map[partnerId] = {
+                    lastMessageText: c.lastMessageText,
+                    unreadMessages: lastSender === authUser._id
+                        ? 0
+                        : c.unreadMessages,
+                    lastMessageTime: new Date(c.lastMessageTime).getTime()
+                };
             });
 
             set({ lastConversationsMap: map });
         } catch (error) {
-            toast.error(error?.response?.data?.message || error.message || "Something went wrong");
+            toast.error(error?.response?.data?.message || error.message);
         }
     },
-
 
     sendMessage: async (messageData) => {
         const { selectedUser, messages } = get();
@@ -140,43 +155,56 @@ export const useChatStore = create((set, get) => ({
             ) {
                 const currentMessages = get().messages;
                 set({ messages: [...currentMessages, newMessage] });
-
-                //Play sound then
-                if (isSoundEnabled) {
-                    const sound = new Audio("/sounds/notification.mp3");
-                    sound.currentTime = 0;
-                    sound.play().catch(() => { });
-                }
             }
 
-            // 2. UPDATE lastMessageMap (always update)
+            // 2. UPDATE lastMessageMap(always update)+unread message(if receiver hasn't selected the sender) 
             const loggedIn = useAuthStore.getState().authUser._id;
             const partnerId =
                 newMessage.senderId === loggedIn
                     ? newMessage.receiverId
                     : newMessage.senderId;
 
-            if (!selectedUser || selectedUser._id !== partnerId) {
-                // user not selected → unread++
-                set((state) => ({
-                    unreadMessagesMap: {
-                        ...state.unreadMessagesMap,
-                        [partnerId]: (state.unreadMessagesMap[partnerId] || 0) + 1,
-                    },
-                }));
-                //Play sound then
-                if (isSoundEnabled) {
-                    const sound = new Audio("/sounds/notification.mp3");
-                    sound.currentTime = 0;
-                    sound.play().catch(() => { });
-                }
+            const isUserSelected = selectedUser && selectedUser._id === partnerId;
+
+            //online unread msg notification
+            if (!isUserSelected && isSoundEnabled) {
+                const sound = new Audio("/sounds/notification.mp3");
+                sound.currentTime = 0;
+                sound.play().catch(() => { });
             }
-            set((state) => ({
-                lastConversationsMap: {
+            set((state) => {
+                const oldData = state.lastConversationsMap[partnerId] || {
+                    lastMessageText: "",
+                    unreadMessages: 0,
+                    lastMessageTime: new Date(newMessage.createdAt).getTime()
+                };
+
+
+                const updatedMap = {
                     ...state.lastConversationsMap,
-                    [partnerId]: newMessage.text
-                }
-            }));
+                    [partnerId]: {
+                        lastMessageText: newMessage.text,
+                        unreadMessages: isUserSelected ? 0 : oldData.unreadMessages + 1,
+                        lastMessageTime: new Date(newMessage.createdAt).getTime()
+                    }
+                };
+
+
+                const sortedPartners = [...state.chatPartners].sort((a, b) => {
+                    const t1 = updatedMap[a._id.toString()]?.lastMessageTime || 0;
+                    const t2 = updatedMap[b._id.toString()]?.lastMessageTime || 0;
+                    return t2 - t1;
+                });
+                console.log(sortedPartners);
+
+
+                return {
+                    lastConversationsMap: updatedMap,
+                    chatPartners: sortedPartners
+                };
+
+            });
+
         });
     },
 

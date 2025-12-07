@@ -30,13 +30,13 @@ const ProfileHeader = () => {
           {/* AVATAR */}
 
           <button
-            className="size-12 rounded-full overflow-hidden relative group"
+            className="size-12 rounded-full overflow-hidden relative group object-center"
             onClick={() => fileInputRef.current.click()}
           >
             <img
               src={selectedImage || authUser.profilePic || "/avatar.png"}
               alt="User image"
-              className="w-11 h-11 rounded-full object-cover "
+              className="size-11 rounded-full object-cover"
             />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity ">
               <span className="text-white text-xs ">Change</span>
@@ -54,7 +54,7 @@ const ProfileHeader = () => {
           {/* USERNAME & ONLINE TEXT */}
           <div>
             <h3 className=" text-slate-200 max-w-[180px] truncate text-base sm:text-xs xl:text-base">
-              {authUser?.fullName}
+              {authUser?.fullName }
             </h3>
             <p className="text-green-500 text-xs sm:text-[10px] xl:text-xs">Online</p>
           </div>

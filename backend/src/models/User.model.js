@@ -19,7 +19,8 @@ const UserSchema = new mongoose.Schema(
         profilePic: {
             type: String,
             default: ""
-        }
+        },
+        lastSeen: { type: Date }
 
     },
     {

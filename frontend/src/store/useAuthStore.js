@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { axiosInstance } from "../lib/axios.js"
 import toast from "react-hot-toast"
 import { io } from "socket.io-client"
+import { useChatStore } from "./useChatStore.js"
 
 const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "/"
 
@@ -15,6 +16,7 @@ export const useAuthStore = create((set, get) => ({
     //socket variables
     socket: null,
     onlineUsers: [],
+
 
     checkAuth: async () => {
         try {
@@ -76,8 +78,14 @@ export const useAuthStore = create((set, get) => ({
             await axiosInstance.post("/auth/logout");
             set({ authUser: null });
             toast.success("User logged out successfully");
+
             //disconnect the socket to server
-            get().dicconnectSocket();
+            get().disconnectSocket();
+            const { selectedUser, setSelectedUser } = useChatStore();
+            setSelectedUser({
+                ...selectedUser,
+                lastSeen: new Date(),
+            });
 
         } catch (error) {
             toast.error(error.response.data.message);

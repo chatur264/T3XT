@@ -8,14 +8,24 @@ const lastMessageSchema = new mongoose.Schema({
             required: true
         }
     ],
-    
+
     lastMessageText: {
         type: String
     },
 
     lastMessageTime: {
         type: Date
-    }
+    },
+
+    unreadMessages: {
+        type: Number,
+        default: 0
+    },
+    
+    lastMessageSenderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
 }, {
     timestamps: true
 })

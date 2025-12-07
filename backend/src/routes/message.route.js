@@ -4,7 +4,7 @@ import { protectRoute } from '../middlewares/auth.middleware.js'
 import { arcjetProtection } from '../middlewares/arcjet.middleware.js'
 const router = express.Router()
 
-// router.use(arcjetProtection)
+router.use(arcjetProtection)
 
 router.use(protectRoute) //Check Authentication frist
 router.get("/contacts", getAllContacts)

@@ -3,6 +3,7 @@ import useKeyboardSound from "../hooks/useKeyboardSound";
 import { useChatStore } from "../store/useChatStore";
 import toast from "react-hot-toast";
 import { ImageIcon, SendIcon, XIcon } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
 
 function MessageInput() {
   const { playRandomKeyStrokeSound } = useKeyboardSound();
@@ -11,7 +12,9 @@ function MessageInput() {
 
   const fileInputRef = useRef(null);
 
-  const { sendMessage, isSoundEnabled } = useChatStore();
+  const { sendMessage, isSoundEnabled, selectedUser } = useChatStore();
+  const { socket, authUser } = useAuthStore();
+  const typingTimeoutRef = useRef(null);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -75,6 +78,20 @@ function MessageInput() {
           onChange={(e) => {
             setText(e.target.value);
             isSoundEnabled && playRandomKeyStrokeSound();
+
+            //Typing effect:
+            socket.emit("typing", { from: authUser._id, to: selectedUser._id });
+
+            if (typingTimeoutRef.current) {
+              clearTimeout(typingTimeoutRef.current);
+            } //clear already running timout cb
+
+            typingTimeoutRef.current = setTimeout(() => {
+              socket.emit("stopTyping", {
+                from: authUser._id,
+                to: selectedUser._id,
+              });
+            }, 1000); //set a new timeout
           }}
           className="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-4"
           placeholder="Type your message..."

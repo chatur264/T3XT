@@ -5,6 +5,7 @@ import ContactList from "../components/ContactList";
 import LogoHeader from "../components/LogoHeader";
 import NoConversionsationPlaceholder from "../components/NoConversionsationPlaceholder";
 import ProfileHeader from "../components/ProfileHeader";
+import SearchUser from "../components/SearchUser";
 import { useChatStore } from "../store/useChatStore";
 
 const ChatPage = () => {
@@ -24,6 +25,7 @@ const ChatPage = () => {
         >
           <LogoHeader />
           <ActiveTabSwitch />
+          <SearchUser />
 
           <div className="flex-1 overflow-y-auto p-2 space-y-2">
             {activeTab === "chats" ? <ChatList /> : <ContactList />}
@@ -33,12 +35,14 @@ const ChatPage = () => {
         </div>
 
         {/* Right  */}
-        <div className={`
+        <div
+          className={`
             w-full 
             ${selectedUser ? "block" : "hidden"} 
             sm:block 
             border-r border-slate-900/40 h-full
-          `}>
+          `}
+        >
           <div className=" h-full">
             {selectedUser ? (
               <ChatContainer />

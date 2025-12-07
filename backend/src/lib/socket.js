@@ -3,6 +3,8 @@ import "dotenv/config"
 import { socketAuthMiddleware } from "../middlewares/socketAuthMiddleware.js";
 import { Server } from "socket.io";
 import express from "express"
+import LastMessage from "../models/LastMessage.model.js";
+import User from "../models/User.model.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -23,9 +25,35 @@ export function getReceiverSocketId(userId) {
 
 //this is for storing online users
 const userSocketMap = {}; //{userId-->socketId}
+export let onlineUsersCurrentChat = {};
 
 io.on("connection", (socket) => {
     console.log("A User connected", socket.user.fullName);
+
+    socket.on("typing", ({ to, from }) => {
+        const receiverSocketId = getReceiverSocketId(to);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("typing", { from });
+        }
+    });
+
+    socket.on("stopTyping", ({ to, from }) => {
+        const receiverSocketId = getReceiverSocketId(to);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("stopTyping", { from });
+        }
+    });
+
+    socket.on("openChat", async ({ chatWith }) => {
+        // user kis chat ko dekh rha h
+        onlineUsersCurrentChat[socket.userId] = chatWith;
+
+        // unread ko turant reset karo
+        await LastMessage.findOneAndUpdate(
+            { participants: { $all: [socket.userId, chatWith] } },
+            { unreadMessages: 0 }
+        )
+    });
 
     const userId = socket.userId;
     userSocketMap[userId] = socket.id;
@@ -33,9 +61,14 @@ io.on("connection", (socket) => {
     //online users info to all other connected users
     io.emit("getOnlineUsers", Object.keys(userSocketMap))
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
         console.log("A user disconnected", socket.user.fullName);
         delete userSocketMap[userId];
+        
+        //update his last seen
+        await User.findByIdAndUpdate(userId, {
+            lastSeen: new Date()
+        })
 
         ///now rethrow the rest online users
         io.emit("getOnlineUsers", Object.keys(userSocketMap));

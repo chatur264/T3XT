@@ -1,7 +1,8 @@
-import { getReceiverSocketId, io } from "../lib/socket.js";
+import { getReceiverSocketId, io, onlineUsersCurrentChat } from "../lib/socket.js";
 import LastMessage from "../models/LastMessage.model.js";
 import Message from "../models/Message.model.js";
 import User from "../models/User.model.js";
+import cloudinary from "cloudinary";
 
 export const getAllContacts = async (req, res) => {
     try {
@@ -58,6 +59,8 @@ export const sendMessage = async (req, res) => {
         let imageUrl;
         if (image) {
             //upload the image to cloudinary
+            console.log("Image");
+
             const uploadResponse = await cloudinary.uploader.upload(image);
             imageUrl = uploadResponse.secure_url;
         }
@@ -86,6 +89,17 @@ export const sendMessage = async (req, res) => {
         // 3) Update lastMessage & lastMessageTime
         lastConversation.lastMessageText = text;
         lastConversation.lastMessageTime = new Date();
+        lastConversation.lastMessageSenderId = senderId;
+
+        const receiverIsViewing =
+            onlineUsersCurrentChat[receiverId] === senderId.toString();
+
+        if (receiverIsViewing) {
+            lastConversation.unreadMessages = 0;
+        } else {
+            lastConversation.unreadMessages = lastConversation.unreadMessages + 1;
+        }
+
         await lastConversation.save();
 
         //! todo: send message in real-time if user is online - socket.io
@@ -107,7 +121,7 @@ export const sendMessage = async (req, res) => {
     } catch (error) {
         console.log("Error in sendMessage:", error);
         res.status(500).json({
-            message: "Internal"
+            message: "Internal server error"
         })
     }
 }
