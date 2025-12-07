@@ -1,5 +1,4 @@
 import User from "../models/User.model.js";
-import "dotenv/config"
 import cloudinary
     from "../lib/cloudinary.js";
 
@@ -17,8 +16,7 @@ export const updateProfile = async (req, res) => {
             { profilePic: uploadResponse.secure_url },
             { new: true }
         ).select("-password");
-
-        console.log(updatedUser);
+ 
         res.status(200).json(updatedUser);
     } catch (error) {
         console.log("Error in update profile:", error);
