@@ -85,8 +85,8 @@ function ChatHeader() {
       <div className="flex justify-center items-center gap-4">
         <div className="flex items-center space-x-3 h-100px relative">
           <div
-            className={`avatar-${
-              onlineUsers.includes(selectedUser._id) ? "online" : ""
+            className={`${
+              onlineUsers.includes(selectedUser._id) ? "avatar-online" : ""
             }`}
           >
             <div className="flex gap-3 rounded-full ">
@@ -103,8 +103,13 @@ function ChatHeader() {
           <h3 className="text-slate-200 font-medium">
             {selectedUser.fullName}
           </h3>
-          <p className={`text-xs ${(onlineUsers.includes(selectedUser._id)
-              ||isTyping)?"text-green-400":"text-white/70 text-[10px]"}`}>
+          <p
+            className={`text-xs ${
+              onlineUsers.includes(selectedUser._id) || isTyping
+                ? "text-green-400"
+                : "text-white/70 text-[10px]"
+            }`}
+          >
             {onlineUsers.includes(selectedUser._id)
               ? isTyping
                 ? "Typing..."

@@ -69,8 +69,8 @@ function ChatsList() {
         >
           <div className="flex items-center gap-3 relative">
             <div
-              className={`size-11 rounded-full overflow-hidden avatar-${
-                onlineUsers.includes(partner._id) ? "online" : ""
+              className={`size-11 rounded-full overflow-hidden ${
+                onlineUsers.includes(partner._id) ? "avatar-online" : ""
               }`}
             >
               <img
