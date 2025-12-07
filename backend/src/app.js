@@ -21,8 +21,13 @@ const __dirname = path.resolve();
 app.use(express.json({ limit: "15mb" }));
 app.use(cookieParser());
 
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://t3xt-frontend.vercel.app"
+];
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: allowedOrigins,
     credentials: true //for cookie 
 }));
 
@@ -45,8 +50,8 @@ app.use("/api/profile", profileRoute)
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-    app.get((_, res) => {
-        res.send(path.join(__dirname, "..", "frontend", "dist", "index.html"));
+    app.get("*", (_, res) => {
+        res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
     });
 }
 
@@ -56,4 +61,4 @@ if (process.env.NODE_ENV !== "production")
         console.log("Server is running on port: " + PORT);
     })
 
-export default server //Export server fro Vercel
+export default server //Export server for Vercel
