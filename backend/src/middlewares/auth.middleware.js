@@ -4,7 +4,11 @@ import User from "../models/User.model.js";
 
 export const protectRoute = async (req, res, next) => {
     try {
-        const token = req.cookies.jwtToken || req.cookies._vercel_jwt;
+        const token =
+            req.cookies.jwtToken ||
+            req.cookies._vercel_jwt ||
+            req.cookies["__Secure-jwtToken"] ||
+            req.cookies["__Secure-_vercel_jwt"];
 
         if (!token) {
             return res.status(401).json({

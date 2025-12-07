@@ -16,7 +16,8 @@ const io = new Server(server, {
             "https://t3xt-frontend-git-main-sachin-kumars-projects-54c2c5aa.vercel.app"
         ],
         credentials: true,
-    }
+    },
+    transports: ["polling"]
 })
 
 // apply authentication middleware to all socket connections: to get the connected user info and userID to Socket
