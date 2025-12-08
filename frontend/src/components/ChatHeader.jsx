@@ -7,6 +7,7 @@ function ChatHeader() {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers, socket } = useAuthStore();
   const [isTyping, setIsTyping] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
   useEffect(() => {
     if (!socket || !selectedUser) return;
     socket.on("typing", ({ from }) => {
@@ -94,10 +95,24 @@ function ChatHeader() {
                 src={selectedUser.profilePic || "/avatar.png"}
                 alt={selectedUser.fullName}
                 className="size-11 rounded-full object-cover"
+                onClick={() => setPreviewImage(selectedUser.profilePic)}
               />
             </div>
           </div>
         </div>
+
+        {/* See image in DP screen and download  */}
+        {previewImage && (
+          <div
+            className="fixed inset-0 bg-black/70 flex justify-center items-center z-50"
+            onClick={() => setPreviewImage(null)}
+          >
+            <img
+              src={previewImage}
+              className="max-w-[90vw] max-h-[90vh] rounded shadow"
+            />
+          </div>
+        )}
 
         <div>
           <h3 className="text-slate-200 font-medium">
