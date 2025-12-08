@@ -12,7 +12,7 @@ const ChatPage = () => {
   const { activeTab, selectedUser } = useChatStore();
 
   return (
-    <div className="relative w-full h-full bg-slate-900">
+    <div className="relative w-full h-full bg-slate-900 ">
       <div className="w-full flex flex-row justify-center items-center h-full">
         {/* Left  */}
         <div

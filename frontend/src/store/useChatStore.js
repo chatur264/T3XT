@@ -113,6 +113,20 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
+    updateUserLastSeen: (userId, lastSeen) => {
+        const { selectedUser } = get();
+
+        // Only update UI if the opened chat is the same user
+        if (selectedUser?._id === userId) {
+            set({
+                selectedUser: {
+                    ...selectedUser,
+                    lastSeen,
+                }
+            });
+        }
+    },
+
     sendMessage: async (messageData) => {
         const { selectedUser, messages } = get();
         const { authUser } = useAuthStore.getState();

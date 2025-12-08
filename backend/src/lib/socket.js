@@ -76,6 +76,13 @@ io.on("connection", (socket) => {
             lastSeen: new Date()
         })
 
+        // broadcast to all clients
+        const lastSeen = new Date();
+        io.emit("user-last-seen", {
+            userId,
+            lastSeen,
+        });
+
         ///now rethrow the rest online users
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     })

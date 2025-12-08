@@ -77,21 +77,10 @@ export const useAuthStore = create((set, get) => ({
         set({ isLoggingOut: true });
         try {
             await axiosInstance.post("/auth/logout");
-
-            // send last seen BEFORE disconnect
-            const { selectedUser } = useChatStore.getState();
-            get().socket?.emit("set-last-seen", {
-                lastSeen: new Date(),
-            });
-
             //disconnect the socket to server
             get().disconnectSocket();
             set({ authUser: null });
             toast.success("User logged out successfully");
-
-
-
-
         } catch (error) {
             toast.error(error.response.data.message);
         } finally {
@@ -127,6 +116,12 @@ export const useAuthStore = create((set, get) => ({
         socket.on("getOnlineUsers", (userIds) => {
             set({ onlineUsers: userIds });
         })
+        
+        //listen for last seen 
+        socket.on("user-last-seen", ({ userId, lastSeen }) => {
+            const { updateUserLastSeen } = useChatStore.getState();
+            updateUserLastSeen(userId, lastSeen);
+        });
     },
 
     disconnectSocket: () => {

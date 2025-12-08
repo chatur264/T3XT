@@ -91,9 +91,9 @@ function MessageInput() {
                 from: authUser._id,
                 to: selectedUser._id,
               });
-            }, 1000); //set a new
+            }, 1000); //set a new 
           }}
-          className="flex-1 min-w-0 bg-slate-800/50 border border-slate-700/50 rounded-lg px-4"
+          className="flex-1 min-w-0 bg-slate-800/50 border border-slate-700/50 rounded-lg py-2 px-4"
           placeholder="Type your message..."
         />
 
@@ -117,7 +117,7 @@ function MessageInput() {
         <button
           type="submit"
           disabled={!text.trim() && !imagePreview}
-          className="bg-linear-to-r from-cyan-500 to-cyan-600 text-white rounded-lg  py-2 px-2 sm:px-4 font-medium hover:from-cyan-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-linear-to-r from-cyan-500 to-cyan-600 text-white rounded-lg px-4 py-2 font-medium hover:from-cyan-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <SendIcon className="w-5 h-5" />
         </button>
