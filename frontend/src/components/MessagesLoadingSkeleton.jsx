@@ -1,6 +1,6 @@
 function MessagesLoadingSkeleton() {
   return (
-    <div className=" mx-auto space-y-2 px-4">
+    <div className=" mx-auto space-y-2">
       {[...Array(6)].map((_, index) => (
         <div
           key={index}
