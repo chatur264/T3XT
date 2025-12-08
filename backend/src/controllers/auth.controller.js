@@ -189,27 +189,21 @@ export const login = async (req, res) => {
 
 }
 
-export const logout = (_, res) => {
+export const logout = async (req, res) => {
     try {
-        const cookieOptions = {
+        res.clearCookie("jwtToken", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            expires: new Date(0),
-        };
-        //all possible token name
-        res.cookie("jwtToken", "", cookieOptions);
-        res.cookie("_vercel_jwt", "", cookieOptions);
-        res.cookie("__Secure-jwtToken", "", cookieOptions);
-        res.cookie("__Secure-_vercel_jwt", "", cookieOptions);
+            sameSite: "none",
+            secure: process.env.NODE_ENV !== "development",
+            path: "/",   // IMPORTANT
+        });
 
-        res.status(201).json({
-            message: "User logged out successfully",
-        })
-    } catch (err) {
-        console.log("Error in logout controller: ", err);
-        res.status(500).json(
-            { message: "Internal server error" }
-        )
+        return res.status(200).json({
+            message: "Logged out successfully"
+        });
+
+    } catch (error) {
+        console.log("Logout error:", error.message);
+        res.status(500).json({ message: "Server error during logout" });
     }
-}
+};
