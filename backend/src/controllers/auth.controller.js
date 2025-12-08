@@ -191,7 +191,18 @@ export const login = async (req, res) => {
 
 export const logout = (_, res) => {
     try {
-        res.cookie("jwtToken", null, { maxAge: 0 });
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            expires: new Date(0),
+        };
+        //all possible token name
+        res.cookie("jwtToken", "", cookieOptions);
+        res.cookie("_vercel_jwt", "", cookieOptions);
+        res.cookie("__Secure-jwtToken", "", cookieOptions);
+        res.cookie("__Secure-_vercel_jwt", "", cookieOptions);
+
         res.status(201).json({
             message: "User logged out successfully",
         })
