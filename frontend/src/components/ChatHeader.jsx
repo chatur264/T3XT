@@ -94,7 +94,7 @@ function ChatHeader() {
               <img
                 src={selectedUser.profilePic || "/avatar.png"}
                 alt={selectedUser.fullName}
-                className="size-11 rounded-full object-cover"
+                className="size-11 rounded-full object-cover cursor-pointer"
                 onClick={() => setPreviewImage(selectedUser.profilePic)}
               />
             </div>

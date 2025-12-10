@@ -11,7 +11,7 @@ import cors from 'cors'
 import { server, app } from "./lib/socket.js"
 
 
-dotenv.config();
+dotenv.config(); 
 const PORT = process.env.PORT || 7777
 
 const __dirname = path.resolve();

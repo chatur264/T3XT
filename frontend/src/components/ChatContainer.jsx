@@ -29,7 +29,7 @@ const ChatContainer = () => {
     <div className="flex flex-col justify-end h-full">
       <ChatHeader />
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-14 ">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-4">
         {messages.length > 0 && !isMessagesLoading ? (
           <div className="m space-y-8">
             {messages.map((msg) => (
@@ -40,10 +40,10 @@ const ChatContainer = () => {
                 }`}
               >
                 <div
-                  className={`chat-bubble rounded-tr-4xl rounded-tl-4xl  px-4 py-4 ${
+                  className={`chat-bubble px-2 py-2 ${
                     msg.senderId === authUser._id
-                      ? "bg-cyan-600 text-white rounded-bl-4xl"
-                      : "bg-slate-800 text-slate-200 rounded-br-4xl"
+                      ? "bg-cyan-600 text-white "
+                      : "bg-slate-800 text-slate-200 "
                   }`}
                 >
                   {msg.image && (
@@ -96,21 +96,6 @@ const ChatContainer = () => {
                       hour12: true,
                     })}
                   </p>
-                </div>
-
-                <div
-                  className={`absolute  ${
-                    msg.senderId === authUser._id ? "-right-10" : "-left-10"
-                  } -bottom-3`}
-                >
-                  <img
-                    src={
-                      (msg.senderId === authUser._id
-                        ? authUser.profilePic
-                        : selectedUser.profilePic) || "/avatar.png"
-                    }
-                    className="size-8 rounded-full overflow-hidden object-cover"
-                  />
                 </div>
               </div>
             ))}
