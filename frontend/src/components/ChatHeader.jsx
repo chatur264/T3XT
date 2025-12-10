@@ -80,8 +80,8 @@ function ChatHeader() {
 
   return (
     <div
-      className="flex justify-between items-center border-b rounded-tr-lg
-   border-slate-700/50 max-h-[65px] px-4 flex-1 bg-slate-800/50"
+      className="flex justify-between items-center border-b 
+   border-slate-700/50 max-h-[65px] px-4 flex-1 bg-slate-800/50 sticky"
     >
       <div className="flex justify-center items-center gap-4">
         <div className="flex items-center space-x-3 h-100px relative">
