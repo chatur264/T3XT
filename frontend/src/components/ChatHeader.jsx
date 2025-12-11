@@ -81,7 +81,7 @@ function ChatHeader() {
   return (
     <div
       className="flex justify-between items-center border-b 
-   border-slate-700/50 max-h-[65px] px-4 flex-1 bg-slate-800/50 sticky"
+   border-slate-700/50 max-h-[65px] px-4 flex-1 bg-slate-800/50"
     >
       <div className="flex justify-center items-center gap-4">
         <div className="flex items-center space-x-3 h-100px relative">
@@ -100,20 +100,6 @@ function ChatHeader() {
             </div>
           </div>
         </div>
-
-        {/* See image in DP screen and download  */}
-        {previewImage && (
-          <div
-            className="fixed inset-0 bg-black/70 flex justify-center items-center z-50"
-            onClick={() => setPreviewImage(null)}
-          >
-            <img
-              src={previewImage}
-              className="max-w-[90vw] max-h-[90vh] rounded shadow"
-            />
-          </div>
-        )}
-
         <div>
           <h3 className="text-slate-200 font-medium">
             {selectedUser.fullName}
@@ -132,6 +118,18 @@ function ChatHeader() {
               : formatLastSeen(selectedUser.lastSeen)}
           </p>
         </div>
+        {/* See image in DP screen and download  */}
+        {previewImage && (
+          <div
+            className="fixed inset-0 bg-black/70 flex justify-center items-center z-100"
+            onClick={() => setPreviewImage(null)}
+          >
+            <img
+              src={previewImage}
+              className="max-w-[90vw] max-h-[90vh] rounded shadow"
+            />
+          </div>
+        )}
       </div>
 
       <button onClick={() => setSelectedUser(null)}>

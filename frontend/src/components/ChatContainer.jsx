@@ -61,6 +61,20 @@ const ChatContainer = () => {
                     </p>
                   )}
 
+                  <p
+                    className={`text-[8px] opacity-75 flex mt-1 ${
+                      msg.senderId === authUser._id
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    {new Date(msg.createdAt).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </p>
+
                   {/* See image in full screen and download  */}
                   {previewImage && (
                     <div
@@ -82,20 +96,6 @@ const ChatContainer = () => {
                       </a>
                     </div>
                   )}
-
-                  <p
-                    className={`text-[8px] opacity-75 flex mt-1 ${
-                      msg.senderId === authUser._id
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    {new Date(msg.createdAt).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </p>
                 </div>
               </div>
             ))}
